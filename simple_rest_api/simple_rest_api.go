@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"simple-service-golang-04/modules/restaurant/restaurantmodel"
+	"simple-service-golang-04/modules/restaurant/restauranttransport/ginrestaurant"
 	"strconv"
 )
 
@@ -60,7 +62,7 @@ func runService(db *gorm.DB) error {
 				return
 			}
 
-			var data Restaurant
+			var data restaurantmodel.Restaurant
 
 			if err := db.Where("id = ?", id).First(&data).Error; err != nil {
 				c.JSON(http.StatusNotFound, gin.H{
@@ -73,7 +75,7 @@ func runService(db *gorm.DB) error {
 		})
 
 		restaurants.GET("", func(c *gin.Context) {
-			var data []Restaurant
+			var data []restaurantmodel.Restaurant
 
 			type Filter struct {
 				CityId int `json:"city_id" form:"city_id"`
@@ -100,21 +102,7 @@ func runService(db *gorm.DB) error {
 
 		})
 
-		restaurants.POST("", func(c *gin.Context) {
-			var data Restaurant
-
-			if err := c.ShouldBind(&data); err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-
-			if err := db.Create(&data).Error; err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-
-			c.JSON(http.StatusOK, gin.H{"data": data})
-		})
+		restaurants.POST("", ginrestaurant.CreateRestaurant(db))
 
 		restaurants.PUT("/:id", func(c *gin.Context) {
 			id, err := strconv.Atoi(c.Param("id"))
@@ -126,7 +114,7 @@ func runService(db *gorm.DB) error {
 				return
 			}
 
-			var data RestaurantUpdate
+			var data restaurantmodel.RestaurantUpdate
 
 			if err := db.Where("id = ?", id).First(&data).Error; err != nil {
 				c.JSON(http.StatusNotFound, gin.H{
@@ -158,7 +146,7 @@ func runService(db *gorm.DB) error {
 				return
 			}
 
-			var data Restaurant
+			var data restaurantmodel.Restaurant
 
 			if err := db.Where("id = ?", id).First(&data).Error; err != nil {
 				c.JSON(http.StatusNotFound, gin.H{
@@ -178,23 +166,4 @@ func runService(db *gorm.DB) error {
 	}
 
 	return r.Run()
-}
-
-type Restaurant struct {
-	Id   int    `json:"id" gorm:"column:id"`
-	Name string `json:"name" gorm:"column:name"`
-	Addr string `json:"address" gorm:"column:addr"`
-}
-
-func (Restaurant) TableName() string {
-	return "restaurants"
-}
-
-type RestaurantUpdate struct {
-	Name *string `json:"name" gorm:"column:name"`
-	Addr *string `json:"address" gorm:"column:addr"`
-}
-
-func (RestaurantUpdate) TableName() string {
-	return Restaurant{}.TableName()
 }
