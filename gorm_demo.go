@@ -42,11 +42,11 @@ func main() {
 	fmt.Println(newNote)
 
 	// Select Note where ID = 1
-	var note Note
-	if err := db.First(&note, 0).Error; err != nil {
+	var firstNote Note
+	if err := db.First(&firstNote, 1).Error; err != nil {
 		log.Println(err)
 	}
-	fmt.Println(note)
+	fmt.Println(firstNote)
 
 	// Select all Notes where id > 1
 	var notes []Note
@@ -54,6 +54,14 @@ func main() {
 		log.Println(err)
 	}
 	fmt.Println(notes)
+
+	// Update firstNote with new Content = "new content"
+	newContent := ""
+	noteUpdate := NoteUpdate{Content: &newContent}
+	if err := db.Table(Note{}.TableName()).Where("id = 1").Updates(noteUpdate).Error; err != nil {
+		log.Println(err)
+	}
+	fmt.Println(noteUpdate)
 
 	// Delete Note where ID = newNote.ID
 	if err := db.Delete(&newNote).Error; err != nil {
@@ -73,6 +81,11 @@ type Note struct {
 	Id      int    `json:"id,ommitempty" gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	Title   string `json:"title" gorm:"column:title"`
 	Content string `json:"content" gorm:"column:content"`
+}
+
+type NoteUpdate struct {
+	Title   *string `json:"title" gorm:"column:title"`
+	Content *string `json:"content" gorm:"column:content"`
 }
 
 func (Note) TableName() string {
