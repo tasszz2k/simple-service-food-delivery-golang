@@ -41,6 +41,13 @@ func main() {
 	}
 	fmt.Println(newNote)
 
+	// Select Note where ID = 1
+	var note Note
+	if err := db.First(&note, 1).Error; err != nil {
+		log.Panicln(err)
+	}
+	fmt.Println(note)
+
 	// Select all Notes where id > 1
 	var notes []Note
 	if err := db.Where("id > ?", 1).Find(&notes).Error; err != nil {
