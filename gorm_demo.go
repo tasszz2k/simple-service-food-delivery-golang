@@ -28,7 +28,7 @@ func main() {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	fmt.Println(db, err)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 
 	// Insert new Note
@@ -37,23 +37,29 @@ func main() {
 		Content: "This is my first note",
 	}
 	if err := db.Create(&newNote).Error; err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	fmt.Println(newNote)
 
 	// Select Note where ID = 1
 	var note Note
-	if err := db.First(&note, 1).Error; err != nil {
-		log.Panicln(err)
+	if err := db.First(&note, 0).Error; err != nil {
+		log.Println(err)
 	}
 	fmt.Println(note)
 
 	// Select all Notes where id > 1
 	var notes []Note
 	if err := db.Where("id > ?", 1).Find(&notes).Error; err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	fmt.Println(notes)
+
+	// Delete Note where ID = newNote.ID
+	if err := db.Delete(&newNote).Error; err != nil {
+		log.Println(err)
+	}
+	fmt.Println(newNote)
 
 }
 
