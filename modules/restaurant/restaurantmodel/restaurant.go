@@ -7,7 +7,7 @@ import (
 )
 
 type Restaurant struct {
-	common.SQLModel `json:"inline"`
+	common.SQLModel `json:,inline`
 	Name            string `json:"name" gorm:"column:name"`
 	Addr            string `json:"address" gorm:"column:addr"`
 	CityId          int    `json:"city_id" gorm:"column:city_id"`
