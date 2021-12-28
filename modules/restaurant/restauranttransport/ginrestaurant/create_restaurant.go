@@ -2,14 +2,14 @@ package ginrestaurant
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
+	"simple-service-golang-04/component"
 	"simple-service-golang-04/modules/restaurant/restaurantbiz"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 	"simple-service-golang-04/modules/restaurant/restaurantstorage"
 )
 
-func CreateRestaurant(db *gorm.DB) gin.HandlerFunc {
+func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data restaurantmodel.RestaurantCreate
 
@@ -18,7 +18,7 @@ func CreateRestaurant(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		store := restaurantstorage.NewSqlStore(db)
+		store := restaurantstorage.NewSqlStore(appCtx.GetMainDBConnection())
 		biz := restaurantbiz.NewCreateRestaurantBiz(store)
 
 		if err := biz.CreateRestaurant(c.Request.Context(), &data); err != nil {

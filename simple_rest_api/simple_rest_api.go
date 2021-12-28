@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"simple-service-golang-04/component"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 	"simple-service-golang-04/modules/restaurant/restauranttransport/ginrestaurant"
 	"strconv"
@@ -50,6 +51,8 @@ func runService(db *gorm.DB) error {
 	})
 
 	// ==================== CRUD =============================
+	appCtx := component.NewAppContext(db)
+
 	restaurants := r.Group("/restaurants")
 	{
 		restaurants.GET("/:id", func(c *gin.Context) {
@@ -102,7 +105,7 @@ func runService(db *gorm.DB) error {
 
 		})
 
-		restaurants.POST("", ginrestaurant.CreateRestaurant(db))
+		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
 
 		restaurants.PUT("/:id", func(c *gin.Context) {
 			id, err := strconv.Atoi(c.Param("id"))
