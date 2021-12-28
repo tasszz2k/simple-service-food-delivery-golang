@@ -77,33 +77,7 @@ func runService(db *gorm.DB) error {
 
 		})
 
-		restaurants.GET("", func(c *gin.Context) {
-			var data []restaurantmodel.Restaurant
-
-			type Filter struct {
-				CityId int `json:"city_id" form:"city_id"`
-			}
-
-			var filter Filter
-
-			c.ShouldBind(&filter)
-
-			newDb := db
-
-			if filter.CityId > 0 {
-				newDb = newDb.Where("city_id = ?", filter.CityId)
-			}
-
-			if err := newDb.Find(&data).Error; err != nil {
-				c.JSON(http.StatusNotFound, gin.H{
-					"message": "restaurants not found",
-				})
-				return
-			}
-
-			c.JSON(http.StatusOK, gin.H{"data": data})
-
-		})
+		restaurants.GET("", ginrestaurant.ListRestaurant(appCtx))
 
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
 

@@ -2,7 +2,6 @@ package restaurantbiz
 
 import (
 	"context"
-	"errors"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 )
 
@@ -22,8 +21,8 @@ func NewCreateRestaurantBiz(store CreateRestaurantStore) *createRestaurantBiz {
 
 func (biz *createRestaurantBiz) CreateRestaurant(ctx context.Context, data *restaurantmodel.RestaurantCreate) error {
 
-	if data.Name == "" {
-		return errors.New("name can not be empty")
+	if err := data.Validate(); err != nil {
+		return err
 	}
 
 	err := biz.store.Create(ctx, data)
