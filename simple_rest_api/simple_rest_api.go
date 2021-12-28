@@ -9,9 +9,7 @@ import (
 	"net/http"
 	"os"
 	"simple-service-golang-04/component"
-	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 	"simple-service-golang-04/modules/restaurant/restauranttransport/ginrestaurant"
-	"strconv"
 )
 
 func main() {
@@ -55,90 +53,15 @@ func runService(db *gorm.DB) error {
 
 	restaurants := r.Group("/restaurants")
 	{
-		restaurants.GET("/:id", func(c *gin.Context) {
-			id, err := strconv.Atoi(c.Param("id"))
-
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"message": "id must be an integer",
-				})
-				return
-			}
-
-			var data restaurantmodel.Restaurant
-
-			if err := db.Where("id = ?", id).First(&data).Error; err != nil {
-				c.JSON(http.StatusNotFound, gin.H{
-					"message": "restaurant not found",
-				})
-				return
-			}
-			c.JSON(http.StatusOK, gin.H{"data": data})
-
-		})
+		restaurants.GET("/:id", ginrestaurant.GetRestaurant(appCtx))
 
 		restaurants.GET("", ginrestaurant.ListRestaurant(appCtx))
 
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
 
-		restaurants.PUT("/:id", func(c *gin.Context) {
-			id, err := strconv.Atoi(c.Param("id"))
+		restaurants.PATCH("/:id", ginrestaurant.UpdateRestaurant(appCtx))
 
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"message": "id must be an integer",
-				})
-				return
-			}
-
-			var data restaurantmodel.RestaurantUpdate
-
-			if err := db.Where("id = ?", id).First(&data).Error; err != nil {
-				c.JSON(http.StatusNotFound, gin.H{
-					"message": "restaurant not found",
-				})
-				return
-			}
-
-			if err := c.ShouldBind(&data); err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-
-			if err := db.Where("id = ?", id).Updates(&data).Error; err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-
-			c.JSON(http.StatusOK, gin.H{"ok": 1})
-		})
-
-		restaurants.DELETE("/:id", func(c *gin.Context) {
-			id, err := strconv.Atoi(c.Param("id"))
-
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"message": "id must be an integer",
-				})
-				return
-			}
-
-			var data restaurantmodel.Restaurant
-
-			if err := db.Where("id = ?", id).First(&data).Error; err != nil {
-				c.JSON(http.StatusNotFound, gin.H{
-					"message": "restaurant not found",
-				})
-				return
-			}
-
-			if err := db.Delete(&data).Error; err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-
-			c.JSON(http.StatusOK, gin.H{"data": data})
-		})
+		restaurants.DELETE("/:id", ginrestaurant.DeleteRestaurant(appCtx))
 
 	}
 
