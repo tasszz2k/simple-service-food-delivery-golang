@@ -27,7 +27,7 @@ func GetRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		data, err := biz.GetRestaurant(c.Request.Context(), id)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			c.JSON(http.StatusBadRequest, map[string]interface{}{
 				"error": err.Error(),
 			})
 			return
