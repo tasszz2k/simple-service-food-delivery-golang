@@ -3,6 +3,7 @@ package restaurantbiz
 import (
 	"context"
 	"errors"
+	"simple-service-golang-04/common"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 )
 
@@ -30,6 +31,9 @@ func (biz *getRestaurantBiz) GetRestaurant(
 	data, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"id": id})
 
 	if err != nil {
+		if err != common.RecordNotFound {
+			return nil, err
+		}
 		return nil, err
 	}
 

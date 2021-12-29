@@ -54,13 +54,9 @@ func runService(db *gorm.DB) error {
 	restaurants := r.Group("/restaurants")
 	{
 		restaurants.GET("/:id", ginrestaurant.GetRestaurant(appCtx))
-
 		restaurants.GET("", ginrestaurant.ListRestaurant(appCtx))
-
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
-
 		restaurants.PATCH("/:id", ginrestaurant.UpdateRestaurant(appCtx))
-
 		restaurants.DELETE("/:id", ginrestaurant.DeleteRestaurant(appCtx))
 
 	}
