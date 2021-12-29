@@ -26,7 +26,7 @@ func (s *sqlStore) FindDataByCondition(
 			return nil, common.RecordNotFound
 		}
 
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	return result, nil

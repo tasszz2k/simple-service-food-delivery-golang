@@ -2,6 +2,7 @@ package restaurantstorage
 
 import (
 	"context"
+	"simple-service-golang-04/common"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 )
 
@@ -16,7 +17,7 @@ func (s *sqlStore) SoftDeleteData(
 		Updates(map[string]interface{}{
 			"status": 0,
 		}).Error; err != nil {
-		return err
+		return common.ErrDB(err)
 	}
 
 	return nil

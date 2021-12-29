@@ -2,7 +2,6 @@ package restaurantbiz
 
 import (
 	"context"
-	"errors"
 	"simple-service-golang-04/common"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 )
@@ -32,13 +31,13 @@ func (biz *getRestaurantBiz) GetRestaurant(
 
 	if err != nil {
 		if err != common.RecordNotFound {
-			return nil, err
+			return nil, common.ErrCannotGetEntity(restaurantmodel.EntityName, err)
 		}
-		return nil, err
+		return nil, common.ErrCannotGetEntity(restaurantmodel.EntityName, err)
 	}
 
 	if data.Status == 0 {
-		return nil, errors.New("data has been deleted")
+		return nil, common.ErrEntityDeleted(restaurantmodel.EntityName, nil)
 	}
 
 	return data, err
