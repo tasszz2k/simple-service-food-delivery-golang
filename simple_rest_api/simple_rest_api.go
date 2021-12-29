@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"simple-service-golang-04/component"
+	"simple-service-golang-04/middleware"
 	"simple-service-golang-04/modules/restaurant/restauranttransport/ginrestaurant"
 )
 
@@ -40,8 +41,12 @@ func createConnection() (*gorm.DB, error) {
 }
 
 func runService(db *gorm.DB) error {
-	r := gin.Default()
 
+	appCtx := component.NewAppContext(db)
+	r := gin.Default()
+	r.Use(middleware.Recover(appCtx))
+
+	// Health Check
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
@@ -49,7 +54,6 @@ func runService(db *gorm.DB) error {
 	})
 
 	// ==================== CRUD =============================
-	appCtx := component.NewAppContext(db)
 
 	restaurants := r.Group("/restaurants")
 	{
