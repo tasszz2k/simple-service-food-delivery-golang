@@ -22,9 +22,9 @@ func Register(appCtx component.AppContext) func(ctx *gin.Context) {
 
 		store := userstorage.NewSqlStore(db)
 		md5 := hasher.NewMd5Hash()
-		repo := userbiz.NewRegisterBusiness(store, md5)
+		biz := userbiz.NewRegisterBusiness(store, md5)
 
-		if err := repo.Register(c.Request.Context(), &data); err != nil {
+		if err := biz.Register(c.Request.Context(), &data); err != nil {
 			panic(err)
 		}
 
