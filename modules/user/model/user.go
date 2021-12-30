@@ -3,6 +3,7 @@ package usermodel
 import (
 	"errors"
 	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/component/tokenprovider"
 )
 
 const EntityName = "User"
@@ -58,6 +59,10 @@ func (User) TableName() string {
 	return "users"
 }
 
+func (u *User) Mask(isAdmin bool) {
+	u.GenUID(common.DbTypeUser)
+}
+
 type UserCreate struct {
 	common.SQLModel `sql:", inline"`
 	Email           string `json:"email" gorm:"column:email"`
@@ -79,6 +84,18 @@ type UserLogin struct {
 
 func (UserLogin) TableName() string {
 	return User{}.TableName()
+}
+
+type Account struct {
+	AccessToken  *tokenprovider.Token `json:"access_token"`
+	RefreshToken *tokenprovider.Token `json:"refresh_token"`
+}
+
+func NewAccount(at, rt *tokenprovider.Token) *Account {
+	return &Account{
+		AccessToken:  at,
+		RefreshToken: rt,
+	}
 }
 
 var (

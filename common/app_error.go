@@ -127,3 +127,10 @@ func ErrEntityNotFound(entity string, err error) *AppError {
 		"Entity "+strings.ToLower(entity)+" not found",
 		"ERROR_ENTITY_NOT_FOUND_"+strings.ToUpper(entity))
 }
+
+func ErrNoPermission(err error) *AppError {
+	return NewCustomError(
+		err,
+		"You don't have permission to do this",
+		"ERROR_NO_PERMISSION")
+}

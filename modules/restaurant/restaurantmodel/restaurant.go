@@ -11,6 +11,7 @@ const EntityName = "restaurant"
 type Restaurant struct {
 	common.SQLModel `json:",inline"`
 	Name            string `json:"name" gorm:"column:name"`
+	OwnerId         int    `json:"-" gorm:"column:owner_id"`
 	Addr            string `json:"address" gorm:"column:addr"`
 	CityId          int    `json:"city_id" gorm:"column:city_id"`
 	LikeCount       int    `json:"like_count" gorm:"-"`
@@ -33,6 +34,7 @@ func (RestaurantUpdate) TableName() string {
 type RestaurantCreate struct {
 	common.SQLModel `json:",inline"`
 	Name            string `json:"name" gorm:"column:name"`
+	OwnerId         int    `json:"-" gorm:"column:owner_id"`
 	Addr            string `json:"address" gorm:"column:addr"`
 	CityId          int    `json:"city_id" gorm:"column:city_id"`
 }

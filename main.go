@@ -20,6 +20,9 @@ func main() {
 }
 
 func createConnection() (*gorm.DB, error) {
+	// Secret key for JWT
+	secretKey := os.Getenv("SYSTEM_SECRET_KEY")
+
 	// Connect to MySQL
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
@@ -34,16 +37,16 @@ func createConnection() (*gorm.DB, error) {
 		log.Fatalln(err)
 	}
 
-	if err := runService(db); err != nil {
+	if err := runService(db, secretKey); err != nil {
 		log.Fatalln(err)
 	}
 
 	return db, err
 }
 
-func runService(db *gorm.DB) error {
+func runService(db *gorm.DB, secretKey string) error {
 
-	appCtx := component.NewAppContext(db)
+	appCtx := component.NewAppContext(db, secretKey)
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 
@@ -56,9 +59,13 @@ func runService(db *gorm.DB) error {
 
 	// ==================== CRUD =============================
 
-	r.POST("/register", ginuser.Register(appCtx))
+	v1 := r.Group("/v1")
 
-	restaurants := r.Group("/restaurants")
+	v1.POST("/register", ginuser.Register(appCtx))
+	v1.POST("/login", ginuser.Login(appCtx))
+	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
+
+	restaurants := v1.Group("/restaurants")
 	{
 		restaurants.GET("/:id", ginrestaurant.GetRestaurant(appCtx))
 		restaurants.GET("", ginrestaurant.ListRestaurant(appCtx))
