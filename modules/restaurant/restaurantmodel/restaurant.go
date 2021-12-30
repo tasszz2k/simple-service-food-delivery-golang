@@ -9,7 +9,7 @@ import (
 const EntityName = "restaurant"
 
 type Restaurant struct {
-	common.SQLModel `json:,inline`
+	common.SQLModel `json:",inline"`
 	Name            string `json:"name" gorm:"column:name"`
 	Addr            string `json:"address" gorm:"column:addr"`
 	CityId          int    `json:"city_id" gorm:"column:city_id"`
@@ -30,10 +30,10 @@ func (RestaurantUpdate) TableName() string {
 }
 
 type RestaurantCreate struct {
-	Id     int    `json:"id" gorm:"column:id"`
-	Name   string `json:"name" gorm:"column:name"`
-	Addr   string `json:"address" gorm:"column:addr"`
-	CityId int    `json:"city_id" gorm:"column:city_id"`
+	common.SQLModel `json:",inline"`
+	Name            string `json:"name" gorm:"column:name"`
+	Addr            string `json:"address" gorm:"column:addr"`
+	CityId          int    `json:"city_id" gorm:"column:city_id"`
 }
 
 func (RestaurantCreate) TableName() string {
@@ -48,4 +48,12 @@ func (res *RestaurantCreate) Validate() error {
 	}
 
 	return nil
+}
+
+var (
+	ErrNameCannotBeEmpty = common.NewCustomError(nil, "restaurant name cannot be empty", "ERR_NAME_CANNOT_BE_EMPTY")
+)
+
+func (data *Restaurant) Mask(isAdminOrOwner bool) {
+	data.GenUID(common.DbTypeRestaurant)
 }

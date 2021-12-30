@@ -8,18 +8,20 @@ import (
 	"simple-service-golang-04/modules/restaurant/restaurantbiz"
 	"simple-service-golang-04/modules/restaurant/restaurantmodel"
 	"simple-service-golang-04/modules/restaurant/restaurantstorage"
-	"strconv"
 )
 
 func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("id"))
+		//id, err := strconv.Atoi(c.Param("id"))
+		uid, err := common.FromBase58(c.Param("id"))
 
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 
 			return
 		}
+
+		id := uid.GetLocalID()
 
 		var data restaurantmodel.RestaurantUpdate
 
@@ -32,7 +34,7 @@ func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		store := restaurantstorage.NewSqlStore(appCtx.GetMainDBConnection())
 		biz := restaurantbiz.NewUpdateRestaurantBiz(store)
 
-		if err := biz.UpdateRestaurant(c.Request.Context(), id, &data); err != nil {
+		if err := biz.UpdateRestaurant(c.Request.Context(), int(id), &data); err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 
 			return
