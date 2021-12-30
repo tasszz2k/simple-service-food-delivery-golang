@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"simple-service-golang-04/common"
-	"simple-service-golang-04/component"
+	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/component"
 )
 
 func Recover(ac component.AppContext) gin.HandlerFunc {

@@ -2,8 +2,8 @@ package restaurantbiz
 
 import (
 	"context"
-	"simple-service-golang-04/common"
-	"simple-service-golang-04/modules/restaurant/restaurantmodel"
+	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantmodel"
 )
 
 type GetRestaurantStore interface {

@@ -3,10 +3,10 @@ package ginrestaurant
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"simple-service-golang-04/common"
-	"simple-service-golang-04/component"
-	"simple-service-golang-04/modules/restaurant/restaurantbiz"
-	"simple-service-golang-04/modules/restaurant/restaurantstorage"
+	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/component"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantbiz"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantstorage"
 )
 
 func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {

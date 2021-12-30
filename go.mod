@@ -1,4 +1,4 @@
-module simple-service-golang-04
+module simple-service-food-delivery-golang
 
 go 1.17
 

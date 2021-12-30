@@ -2,7 +2,7 @@ package restaurantmodel
 
 import (
 	"errors"
-	"simple-service-golang-04/common"
+	"simple-service-food-delivery-golang/common"
 	"strings"
 )
 
@@ -13,6 +13,7 @@ type Restaurant struct {
 	Name            string `json:"name" gorm:"column:name"`
 	Addr            string `json:"address" gorm:"column:addr"`
 	CityId          int    `json:"city_id" gorm:"column:city_id"`
+	LikeCount       int    `json:"like_count" gorm:"-"`
 }
 
 func (Restaurant) TableName() string {

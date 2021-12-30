@@ -3,8 +3,8 @@ package restaurantstorage
 import (
 	"context"
 	"gorm.io/gorm"
-	"simple-service-golang-04/common"
-	"simple-service-golang-04/modules/restaurant/restaurantmodel"
+	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantmodel"
 )
 
 func (s *sqlStore) FindDataByCondition(

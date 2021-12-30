@@ -8,9 +8,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"simple-service-golang-04/component"
-	"simple-service-golang-04/middleware"
-	"simple-service-golang-04/modules/restaurant/restauranttransport/ginrestaurant"
+	"simple-service-food-delivery-golang/component"
+	"simple-service-food-delivery-golang/middleware"
+	"simple-service-food-delivery-golang/modules/restaurant/restauranttransport/ginrestaurant"
+	ginuser "simple-service-food-delivery-golang/modules/user/transport/gin"
 )
 
 func main() {
@@ -54,6 +55,8 @@ func runService(db *gorm.DB) error {
 	})
 
 	// ==================== CRUD =============================
+
+	r.POST("/register", ginuser.Register(appCtx))
 
 	restaurants := r.Group("/restaurants")
 	{

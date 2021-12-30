@@ -93,6 +93,13 @@ func ErrCannotDeleteEntity(entity string, err error) *AppError {
 		"ERROR_CANNOT_DELETE_"+strings.ToUpper(entity))
 }
 
+func ErrCannotCreateEntity(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		"Cannot create "+strings.ToLower(entity),
+		"ERROR_CANNOT_CREATE_"+strings.ToUpper(entity))
+}
+
 func ErrCannotGetEntity(entity string, err error) *AppError {
 	return NewCustomError(
 		err,

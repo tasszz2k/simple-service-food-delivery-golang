@@ -2,8 +2,8 @@ package restaurantstorage
 
 import (
 	"context"
-	"simple-service-golang-04/common"
-	"simple-service-golang-04/modules/restaurant/restaurantmodel"
+	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantmodel"
 )
 
 func (s *sqlStore) ListDataByCondition(
@@ -35,8 +35,15 @@ func (s *sqlStore) ListDataByCondition(
 		return nil, common.ErrDB(err)
 	}
 
+	if v := paging.FakeCursor; v != "" {
+		if uid, err := common.FromBase58(v); err == nil {
+			db = db.Where("id < ?", uid.GetLocalID())
+		}
+	} else {
+		db = db.Offset((paging.Page - 1) * paging.Limit)
+	}
+
 	if err := db.
-		Offset((paging.Page - 1) * paging.Limit).
 		Limit(paging.Limit).
 		Order("id desc").
 		Find(&result).Error; err != nil {

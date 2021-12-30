@@ -3,11 +3,12 @@ package ginrestaurant
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"simple-service-golang-04/common"
-	"simple-service-golang-04/component"
-	"simple-service-golang-04/modules/restaurant/restaurantbiz"
-	"simple-service-golang-04/modules/restaurant/restaurantmodel"
-	"simple-service-golang-04/modules/restaurant/restaurantstorage"
+	"simple-service-food-delivery-golang/common"
+	"simple-service-food-delivery-golang/component"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantbiz"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantmodel"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantstorage"
+	restaurantlikestorage "simple-service-food-delivery-golang/modules/restaurantlike/storage"
 )
 
 func ListRestaurant(appCtx component.AppContext) gin.HandlerFunc {
@@ -29,7 +30,8 @@ func ListRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		paging.Fulfill()
 
 		store := restaurantstorage.NewSqlStore(appCtx.GetMainDBConnection())
-		biz := restaurantbiz.NewListRestaurantBiz(store)
+		likeStore := restaurantlikestorage.NewSqlStore(appCtx.GetMainDBConnection())
+		biz := restaurantbiz.NewListRestaurantBiz(store, likeStore)
 
 		result, err := biz.ListRestaurant(c.Request.Context(), &filter, &paging)
 		if err != nil {
@@ -39,6 +41,10 @@ func ListRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 
 		for i := range result {
 			result[i].Mask(false)
+
+			if i == len(result)-1 {
+				paging.NextCursor = result[i].FakeId.String()
+			}
 		}
 
 		c.JSON(http.StatusOK, common.NewSuccessResponse(result, paging, filter))

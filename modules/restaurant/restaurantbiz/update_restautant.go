@@ -3,7 +3,7 @@ package restaurantbiz
 import (
 	"context"
 	"errors"
-	"simple-service-golang-04/modules/restaurant/restaurantmodel"
+	"simple-service-food-delivery-golang/modules/restaurant/restaurantmodel"
 )
 
 type UpdateRestaurantStore interface {
