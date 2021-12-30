@@ -69,7 +69,7 @@ func runService(db *gorm.DB, secretKey string) error {
 	{
 		restaurants.GET("/:id", ginrestaurant.GetRestaurant(appCtx))
 		restaurants.GET("", ginrestaurant.ListRestaurant(appCtx))
-		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
+		restaurants.POST("", middleware.RequiredAuth(appCtx), ginrestaurant.CreateRestaurant(appCtx))
 		restaurants.PATCH("/:id", ginrestaurant.UpdateRestaurant(appCtx))
 		restaurants.DELETE("/:id", ginrestaurant.DeleteRestaurant(appCtx))
 	}
